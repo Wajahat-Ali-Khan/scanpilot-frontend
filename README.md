@@ -21,7 +21,7 @@ Modern SaaS application for AI-powered document analysis.
 
 \`\`\`bash
 # Clone repository
-git clone https://github.com/YOUR_USERNAME/scanpilot-frontend.git
+git clone https://github.com/Wajahat-Ali-Khan/scanpilot-frontend.git
 
 # Navigate to project
 cd scanpilot-frontend
@@ -56,7 +56,7 @@ src/
 
 ## 🔗 Backend Repository
 
-[ScanPilot Backend](https://github.com/YOUR_USERNAME/scanpilot-backend)
+[ScanPilot Backend](https://github.com/Wajahat-Ali-Khan/scanpilot)
 
 ## 📝 License
 
