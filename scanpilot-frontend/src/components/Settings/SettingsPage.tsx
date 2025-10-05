@@ -1,10 +1,14 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { AlertCircle, Check } from 'lucide-react';
-import { api } from '../../services/api.js';
+import { api } from '../../services/api';
+import type { User } from '../../types';
 
-// Settings Page Component 
-function SettingsPage({ user }) {
+interface SettingsPageProps {
+  user: User | null;
+}
+
+function SettingsPage({ user }: SettingsPageProps) {
   const [saved, setSaved] = useState(false);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
@@ -14,42 +18,41 @@ function SettingsPage({ user }) {
     password: '',
   });
 
-  const handleSave = async (e) => {
+  const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
     setLoading(true);
 
     try {
-      const updateData = {
-        full_name: formData.full_name || null,
-        email: formData.email || null,
+      const updateData: any = {
+        full_name: formData.full_name || undefined,
+        email: formData.email || undefined,
       };
 
       if (formData.password) {
         updateData.password = formData.password;
       }
 
-      await api.users.updateProfile(updateData);
+      await api.updateProfile(updateData);
       setSaved(true);
       setTimeout(() => setSaved(false), 2000);
-      
-      // Clear password field after successful update
+
       setFormData({ ...formData, password: '' });
     } catch (err) {
-      setError(err.message || 'Failed to update profile');
+      setError(err instanceof Error ? err.message : 'Failed to update profile');
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="p-6 max-w-2xl mx-auto space-y-6">
+    <div className="p-4 sm:p-6 max-w-2xl mx-auto space-y-4 sm:space-y-6">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="bg-white p-6 rounded-xl shadow-lg"
+        className="bg-white p-4 sm:p-6 rounded-xl shadow-lg"
       >
-        <h3 className="text-xl font-semibold mb-6">Account Settings</h3>
+        <h3 className="text-lg sm:text-xl font-semibold mb-4 sm:mb-6">Account Settings</h3>
 
         {error && (
           <motion.div
@@ -126,13 +129,15 @@ function SettingsPage({ user }) {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.1 }}
-        className="bg-white p-6 rounded-xl shadow-lg"
+        className="bg-white p-4 sm:p-6 rounded-xl shadow-lg"
       >
-        <h3 className="text-xl font-semibold mb-4">Account Information</h3>
+        <h3 className="text-lg sm:text-xl font-semibold mb-4">Account Information</h3>
         <div className="space-y-3 text-sm">
           <div className="flex justify-between">
             <span className="text-gray-600">Account ID:</span>
-            <span className="font-mono text-gray-800">{user?.id?.slice(0, 8)}...</span>
+            <span className="font-mono text-gray-800 text-xs sm:text-sm">
+              {user?.id?.slice(0, 8)}...
+            </span>
           </div>
           <div className="flex justify-between">
             <span className="text-gray-600">Member since:</span>

@@ -1,10 +1,15 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { X, AlertCircle } from 'lucide-react';
-import { api } from '../../services/api.js';
+import { api } from '../../services/api';
 
-// AuthModal Component 
-function AuthModal({ onClose, onLogin }) {
+
+interface AuthModalProps {
+  onClose: () => void;
+  onLogin: (email: string, password: string) => Promise<void>;
+}
+
+function AuthModal({ onClose, onLogin }: AuthModalProps) {
   const [isLogin, setIsLogin] = useState(true);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -12,7 +17,7 @@ function AuthModal({ onClose, onLogin }) {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
     setLoading(true);
@@ -22,12 +27,12 @@ function AuthModal({ onClose, onLogin }) {
         await onLogin(email, password);
         onClose();
       } else {
-        await api.auth.register(email, password, fullName);
+        await api.register({ email, password, full_name: fullName });
         await onLogin(email, password);
         onClose();
       }
     } catch (err) {
-      setError(err.message || 'Authentication failed');
+      setError(err instanceof Error ? err.message : 'Authentication failed');
     } finally {
       setLoading(false);
     }
@@ -46,10 +51,12 @@ function AuthModal({ onClose, onLogin }) {
         animate={{ scale: 1, y: 0 }}
         exit={{ scale: 0.9, y: 20 }}
         onClick={(e) => e.stopPropagation()}
-        className="bg-white rounded-2xl shadow-2xl max-w-md w-full p-8"
+  className="bg-white rounded-2xl shadow-2xl max-w-md sm:max-w-lg w-full p-4 sm:p-6 max-h-[90vh] overflow-y-auto"
       >
         <div className="flex justify-between items-center mb-6">
-          <h2 className="text-2xl font-bold">{isLogin ? 'Sign In' : 'Create Account'}</h2>
+          <h2 className="text-xl sm:text-2xl font-bold">
+            {isLogin ? 'Sign In' : 'Create Account'}
+          </h2>
           <button onClick={onClose} className="text-gray-400 hover:text-gray-600">
             <X size={24} />
           </button>
@@ -110,7 +117,7 @@ function AuthModal({ onClose, onLogin }) {
             disabled={loading}
             className="w-full py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-lg font-semibold disabled:opacity-50"
           >
-            {loading ? 'Processing...' : (isLogin ? 'Sign In' : 'Create Account')}
+            {loading ? 'Processing...' : isLogin ? 'Sign In' : 'Create Account'}
           </motion.button>
         </form>
 
