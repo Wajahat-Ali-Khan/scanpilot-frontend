@@ -37,13 +37,14 @@ function LandingPage({ onLogin }: LandingPageProps) {
         {showAuth && <AuthModal onClose={() => setShowAuth(false)} onLogin={onLogin} />}
       </AnimatePresence>
 
-      <section className="pt-28 sm:pt-36 pb-12 sm:pb-20 px-4 sm:px-6">
+      {/* // In LandingPage.tsx, update the main section: */}
+      <section className="pt-32 sm:pt-40 pb-20 px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto text-center">
           <motion.h1
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
-            className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-4 sm:mb-6 bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent px-4"
+            className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold mb-6 sm:mb-8 bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent"
           >
             Transform Your Documents
           </motion.h1>
@@ -51,10 +52,9 @@ function LandingPage({ onLogin }: LandingPageProps) {
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.2 }}
-            className="text-lg sm:text-xl text-gray-600 mb-6 sm:mb-8 max-w-2xl mx-auto px-4"
+            className="text-xl sm:text-2xl text-gray-600 mb-8 sm:mb-12 max-w-3xl mx-auto leading-relaxed"
           >
-            Powerful AI-driven document analysis. Upload, analyze, and get intelligent insights in
-            seconds.
+            Powerful AI-driven document analysis. Upload, analyze, and get intelligent insights in seconds.
           </motion.p>
           <motion.button
             initial={{ opacity: 0, y: 30 }}
@@ -70,8 +70,9 @@ function LandingPage({ onLogin }: LandingPageProps) {
         </div>
       </section>
 
-      <section className="py-10 sm:py-16 px-4 sm:px-6">
-        <div className="max-w-7xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
+
+      <section className="py-20 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 sm:gap-12">
           {[
             {
               title: 'AI-Powered Analysis',

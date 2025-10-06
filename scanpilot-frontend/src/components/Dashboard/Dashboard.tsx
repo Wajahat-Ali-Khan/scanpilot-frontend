@@ -4,7 +4,15 @@ import { api } from '../../services/api';
 import type { AuditResult } from '../../types';
 
 function Dashboard() {
-  const [stats, setStats] = useState({ total: 0, completed: 0, pending: 0 });
+  // FIX: Properly typed stats state
+  const [stats, setStats] = useState({
+    total: 0,
+    completed: 0,
+    pending: 0,
+    processing: 0,
+    failed: 0,
+    totalFiles: 0,
+  });
   const [recentResults, setRecentResults] = useState<AuditResult[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -15,10 +23,25 @@ function Dashboard() {
         setRecentResults(results.slice(0, 5));
 
         const completed = results.filter((r) => r.status === 'completed').length;
+
+        // Fetch files
+        const files = await api.getAllUploads();
+        const fileStats = {
+          totalFiles: files.length,
+          pending: files.filter((f) => f.status === 'pending').length,
+          processing: files.filter((f) => f.status === 'processing').length,
+          completed: files.filter((f) => f.status === 'completed').length,
+          failed: files.filter((f) => f.status === 'failed').length,
+        };
+
+        // FIX: Properly merge stats
         setStats({
           total: results.length,
-          completed,
-          pending: results.length - completed,
+          completed: fileStats.completed,
+          pending: fileStats.pending,
+          processing: fileStats.processing,
+          failed: fileStats.failed,
+          totalFiles: fileStats.totalFiles,
         });
       } catch (error) {
         console.error('Failed to fetch dashboard data:', error);
@@ -31,14 +54,10 @@ function Dashboard() {
   }, []);
 
   const metrics = [
-    { label: 'Total Analyses', value: stats.total, color: 'from-blue-600 to-blue-400' },
-    { label: 'Completed', value: stats.completed, color: 'from-green-600 to-green-400' },
+    { label: 'Total Files', value: stats.totalFiles, color: 'from-blue-600 to-blue-400' },
     { label: 'Pending', value: stats.pending, color: 'from-yellow-600 to-yellow-400' },
-    {
-      label: 'Success Rate',
-      value: stats.total > 0 ? Math.round((stats.completed / stats.total) * 100) + '%' : '0%',
-      color: 'from-purple-600 to-purple-400',
-    },
+    { label: 'Completed', value: stats.completed, color: 'from-green-600 to-green-400' },
+    { label: 'Processing', value: stats.processing, color: 'from-purple-600 to-purple-400' },
   ];
 
   if (loading) {
@@ -80,7 +99,9 @@ function Dashboard() {
         <h3 className="text-lg sm:text-xl font-semibold mb-4">Recent Activity</h3>
         {recentResults.length === 0 ? (
           <div className="text-center py-8 text-gray-500">
-            <p className="text-sm sm:text-base">No activity yet. Upload a document to get started!</p>
+            <p className="text-sm sm:text-base">
+              No activity yet. Upload a document to get started!
+            </p>
           </div>
         ) : (
           <div className="space-y-3">

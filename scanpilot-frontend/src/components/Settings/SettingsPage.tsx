@@ -136,7 +136,7 @@ function SettingsPage({ user }: SettingsPageProps) {
           <div className="flex justify-between">
             <span className="text-gray-600">Account ID:</span>
             <span className="font-mono text-gray-800 text-xs sm:text-sm">
-              {user?.id?.slice(0, 8)}...
+              {user?.id ? `#${user.id.toString().padStart(6, '0')}` : 'N/A'}
             </span>
           </div>
           <div className="flex justify-between">

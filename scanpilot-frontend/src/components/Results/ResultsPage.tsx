@@ -73,13 +73,12 @@ function ResultsPage() {
                 {results.map((row, idx) => (
                   <motion.tr
                     key={row.id}
-                    initial={{ opacity: 0, x: -20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: idx * 0.1 }}
-                    whileHover={{ backgroundColor: '#f9fafb' }}
-                    className="border-b last:border-b-0 cursor-pointer"
-                    onClick={() => setSelectedResult(row)}
-                  >
+                      initial={{ opacity: 0, x: -20 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: idx * 0.1 }}
+                      className="border-b last:border-b-0 cursor-pointer hover:bg-gray-50 transition-colors" // Added hover class
+                      onClick={() => setSelectedResult(row)}
+                    >
                     <td className="px-4 sm:px-6 py-4 text-xs sm:text-base">
                       {new Date(row.created_at).toLocaleDateString()}
                     </td>

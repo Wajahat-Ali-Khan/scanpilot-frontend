@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion';
 import { LayoutDashboard, Upload, BarChart3, Settings, X } from 'lucide-react';
-
+import { FileText } from 'lucide-react';
 import type { PageType } from '../../App';
 
 
@@ -12,11 +12,12 @@ interface SidebarProps {
 
 function Sidebar({ currentPage, onNavigate, onClose }: SidebarProps) {
   const menuItems: Array<{ id: PageType; icon: typeof LayoutDashboard; label: string }> = [
-    { id: 'dashboard', icon: LayoutDashboard, label: 'Dashboard' },
-    { id: 'upload', icon: Upload, label: 'Upload' },
-    { id: 'results', icon: BarChart3, label: 'Results' },
-    { id: 'settings', icon: Settings, label: 'Settings' },
-  ];
+  { id: 'dashboard', icon: LayoutDashboard, label: 'Dashboard' },
+  { id: 'upload', icon: Upload, label: 'Upload' },
+  { id: 'files', icon: FileText, label: 'My Files' },
+  { id: 'results', icon: BarChart3, label: 'Results' },
+  { id: 'settings', icon: Settings, label: 'Settings' },
+];
 
   return (
     <motion.aside

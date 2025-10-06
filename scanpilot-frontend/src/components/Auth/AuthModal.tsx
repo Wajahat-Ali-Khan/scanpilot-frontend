@@ -18,25 +18,28 @@ function AuthModal({ onClose, onLogin }: AuthModalProps) {
   const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setError('');
-    setLoading(true);
+  e.preventDefault();
+  setError('');
+  setLoading(true);
 
-    try {
-      if (isLogin) {
-        await onLogin(email, password);
-        onClose();
-      } else {
-        await api.register({ email, password, full_name: fullName });
-        await onLogin(email, password);
-        onClose();
-      }
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Authentication failed');
-    } finally {
-      setLoading(false);
+  try {
+    // Clear any existing tokens before new login attempt
+    localStorage.removeItem('access_token');
+    
+    if (isLogin) {
+      await onLogin(email, password);
+      onClose();
+    } else {
+      await api.register({ email, password, full_name: fullName });
+      await onLogin(email, password);
+      onClose();
     }
-  };
+  } catch (err) {
+    setError(err instanceof Error ? err.message : 'Authentication failed');
+  } finally {
+    setLoading(false);
+  }
+};
 
   return (
     <motion.div

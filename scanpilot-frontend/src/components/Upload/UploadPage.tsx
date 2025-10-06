@@ -4,7 +4,11 @@ import { Upload, AlertCircle, Check } from 'lucide-react';
 import { api } from '../../services/api';
 import type { UploadResponse } from '../../types';
 
-function UploadPage() {
+interface UploadPageProps {
+  onUploadSuccess?: () => void;
+}
+
+function UploadPage({ onUploadSuccess }: UploadPageProps) {
   const [isDragging, setIsDragging] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [progress, setProgress] = useState(0);
@@ -35,7 +39,11 @@ function UploadPage() {
         setSuccess(false);
         setUploading(false);
         setProgress(0);
-      }, 3000);
+        
+        if (onUploadSuccess) {
+          onUploadSuccess();
+        }
+      }, 2000);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Upload failed');
       setUploading(false);
@@ -43,15 +51,38 @@ function UploadPage() {
     }
   };
 
+  // FIX: Properly typed handleDrop function
   const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
     setIsDragging(false);
     const file = e.dataTransfer.files[0];
-    if (file) handleFileUpload(file);
+    if (file) {
+      handleFileUpload(file);
+    }
   };
 
   return (
     <div className="p-4 sm:p-6 max-w-4xl mx-auto">
+      {/* Info banner */}
+      <motion.div
+        initial={{ opacity: 0, y: -10 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="mb-6 p-4 bg-blue-50 border border-blue-200 rounded-lg"
+      >
+        <div className="flex items-start gap-3">
+          <AlertCircle className="text-blue-600 flex-shrink-0 mt-0.5" size={20} />
+          <div className="text-sm text-blue-800">
+            <p className="font-medium mb-1">How it works:</p>
+            <ol className="list-decimal list-inside space-y-1">
+              <li>Upload your file here (PDF, DOCX, or TXT)</li>
+              <li>Go to "My Files" to view uploaded files</li>
+              <li>Click "Process" to analyze your document</li>
+              <li>View results in the "Results" page</li>
+            </ol>
+          </div>
+        </div>
+      </motion.div>
+
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -60,12 +91,12 @@ function UploadPage() {
         onDragOver={(e) => e.preventDefault()}
         onDrop={handleDrop}
         whileHover={{ scale: 1.02 }}
-        className={`border-2 border-dashed rounded-2xl p-6 sm:p-10 lg:p-12 text-center transition-all overflow-hidden ${
-          isDragging ? 'border-blue-600 bg-blue-50/60 scale-102' : 'border-gray-200 bg-white'
+        className={`border-4 border-dashed rounded-2xl p-8 sm:p-16 text-center transition-all ${
+          isDragging ? 'border-blue-600 bg-blue-50 scale-105' : 'border-gray-300 bg-white'
         }`}
       >
         <Upload size={48} className="mx-auto mb-4 text-gray-400 sm:w-16 sm:h-16" />
-  <h3 className="text-lg sm:text-xl font-semibold mb-2">Drop files here</h3>
+        <h3 className="text-xl sm:text-2xl font-semibold mb-2">Drop files here</h3>
         <p className="text-sm sm:text-base text-gray-600 mb-2">or click to browse</p>
         <p className="text-xs sm:text-sm text-gray-500 mb-6">Supported: PDF, DOCX, TXT (max 10MB)</p>
         <input
@@ -139,7 +170,7 @@ function UploadPage() {
                 <Check className="text-green-600" size={24} />
               </motion.div>
               <span className="text-sm sm:text-base text-green-800 font-medium">
-                File uploaded successfully!
+                File uploaded successfully! Redirecting to My Files...
               </span>
             </div>
             <div className="text-xs sm:text-sm text-green-700">
